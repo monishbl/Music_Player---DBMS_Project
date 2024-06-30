@@ -25,7 +25,7 @@ To get lyrical running on your machine, follow these steps:
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/monishbl/DBMS_Projects/tree/cd0d4869711a7127c7bf98e4f33dfa43f3799552/Music_Player
+    git clone https://github.com/monishbl/Music_Player---DBMS_Project.git
     cd lyrical
     ```
 
