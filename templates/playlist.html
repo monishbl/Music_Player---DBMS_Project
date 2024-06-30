@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/output.css">
+    <script src="/static/script.js"></script>
+    <script>
+        
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="fixed w-full top-0 z-50 bg-secondary shadow-2xl shadow-primary">
+        <div class="flex p-2 justify-between items-center border-b border-Text flex-wrap lg:px-5">
+            <div class="flex items-center">
+                <!-- Logo -->
+                <img src="/static/assets/icons8-music.svg" class="w-10 h-10 cursor-pointer">
+            </div>
+            <div>
+                <!-- Search Bar -->
+                <form action="/my-link/" method="post" class="flex items-center">
+                    <input type="text" class="w-64 h-10 p-2 border border-Text rounded-full" id="searched_song" placeholder="Search for songs">
+                    <button type="submit" class="w-10 h-10 bg-primary rounded-full">
+                        <img src="/static/assets/5613.svg" class="w-6 h-6">
+                    </button>
+
+                </form>
+
+            </div>
+            <div class="flex items-center">
+                <!-- User Profile Image -->
+                <a href="/login"><img src="/static/assets/Mask group.svg" class="w-8 h-8 cursor-pointer"></a>
+            </div>
+        </div>
+    </div>
+    <div class="w-full h-dvh flex justify-center items-center">
+    <ul id="selected_playlist" class="text-black h-96 overflow-y-auto"></ul>
+</div>
+<!-- Audio Player Controls -->
+<section class="w-dvw h-24 bg-secondary fixed bottom-0 z-50 border-t border-Text">
+    <!-- Hidden Audio Player -->
+    <audio id="audio-player" class="hidden absolute" controls>
+        <source src="" type="audio/mp3">
+    </audio>
+    <!-- Playback Controls and Song Information -->
+    <div class="flex flex-col items-center justify-center">
+        <div class="w-full flex justify-between">
+            <span id="curtime" class="text-black" style="padding-left: 20px;">0:00</span>
+            <div id="timeline">
+                <!-- Playback Progress Bar -->
+                <div id="progress"></div>
+            </div>
+            <span id="tottime" class="text-black" style="padding-right: 20px;">0:00</span>
+        </div>
+        <div class="w-full flex justify-between bottom-0" style="margin-bottom: 10px; position: absolute; left: 50%; transform: translateX(-50%); padding-inline:20px ;">
+            <div class="flex flex-col">
+                <!-- Current and Next Song Information -->
+                <span class="text-black" id="current-song"></span>
+                <span class="text-black" id="next-song"></span>
+            </div>
+            <!-- Playback Control Buttons -->
+            <div class="absolute bottom-0" style=" left: 50%; transform: translateX(-50%);">
+                <!-- <button id="shuffle-btn" onclick="toggleShuffle()">🔁</button> -->
+                <button id="play-prev-btn" onclick="playPrevious()">⬅️</button>
+                <button id="play-pause-btn" onclick="togglePlayPause()">▶️</button>
+                <button id="play-next-btn" onclick="playNext()">➡️</button>
+                <button id="repeat-btn" onclick="toggleRepeat()">Repeat: off</button>
+            </div>
+            <!-- Playlist Dropdown Button and Content -->
+            <div class="dropup absolute bottom-0" style="display: none;">
+                <button class="dropbtn rounded-full flex" style="gap: 5px; padding-inline: 10px; padding-block: 10px; display: none;">☰<h1>Queue</h1></button>
+                <div class="dropup-content" style="max-height: 500px; overflow-y: auto;">
+                    <!-- Playlist will be dynamically populated using JavaScript -->
+                    <ul id="queue" class="text-black"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const playlistId = urlParams.get('playlistId');
+        console.log("list fetch initiation")
+        if (playlistId) {
+            fetch(`/fetch_songs/${playlistId}`)
+                .then(response => response.json())
+                .then(data => {
+                    playlistData = data;
+                    const selectedPlaylist = document.getElementById('selected_playlist');
+                    const queue = document.getElementById('queue');
+                    queue.innerHTML = ''; // Clear existing content
+                    selectedPlaylist.innerHTML = '';
+                    data.forEach((song, index) => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = song.name;
+                        listItem.setAttribute('data-src', song.path);
+                        const playsong_path=song.path
+                        console.log(song.path)
+                        selectedPlaylist.appendChild(listItem);
+                        console.log("song fetched successfully")
+                        listItem.addEventListener('click', () => {
+                            playTrackfromplaylist(playsong_path, index);
+                        });
+                        const queueItem = listItem.cloneNode(true);
+                        queue.appendChild(queueItem);
+                    });
+                    // Update next song name
+                    const nextSongElement = document.getElementById('next-song');
+                    nextSongElement.textContent = `Next: ${playlistData.length > 0 ? playlistData[0].name : ''}`;
+                })
+                .catch(error => console.error('Error fetching songs:', error));
+        } else {
+            console.error('No playlistId parameter found in the URL');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="/static/output.css">
+    <style>
+        #Available_playlists li:hover {
+            background-color: #c8e0c8;
+            animation-duration: 0.3s;
+        }
+    </style>
+    <script>
+        fetch('/fetch_playlists')
+    .then(response => response.json())
+    .then(data => {
+        playlistData = data;
+        const Available_playlist = document.getElementById('Available_playlists');
+        Available_playlist.innerHTML = '';
+        playlistData.forEach((playlist, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent =playlist.playlist_name;
+            Available_playlist.appendChild(listItem);
+            listItem.addEventListener('click', () => {
+                remove(playlist.pid); // Pass index to remove function
+            });
+        });
+    })
+    .catch(error => console.error('Error fetching Playlists:', error));
+
+const remove = (index) => {
+    fetch(`/remove/${index}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            fetch('/fetch_playlists')
+            .then(response => response.json())
+    .then(data => {
+        playlistData = data;
+        const Available_playlist = document.getElementById('Available_playlists');
+        Available_playlist.innerHTML = '';
+        playlistData.forEach((playlist, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = playlist.playlist_name;
+            Available_playlist.appendChild(listItem);
+            listItem.addEventListener('click', () => {
+                remove(index+1);
+            });
+        });
+    })
+            console.log('Playlist removed successfully');
+            // Optionally, you may want to update the UI here
+        } else {
+            console.error('Failed to remove playlist');
+        }
+    })
+    .catch(error => console.error('Error removing playlist:', error));
+};
+
+        </script>
+</head>
+<body class="w-dvw h-dvh p-10 flex flex-col gap-10">
+    <div class="w-full">
+        <h1 class="text-xl">Welcome to</h1>
+    <h1 class="text-3xl font-bold text-[#9EBC9E]">Admin Control Panel</h1>
+    </div>
+    <div class="w-full flex gap-10">
+        <div class="w-full flex flex-col gap-5 bg-[#9EBC9E] rounded-xl p-5">
+            <h1 class="text-xl font-semibold">Upload Song</h1>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="flex flex-col gap-2">
+                    <label for="song">Select Song:</label>
+                    <input type="file" id="song" name="song" accept=".mp3, .wav, .ogg" required>
+                </div>
+<br>
+                <label for="playlist">Select Playlist:</label>
+                <select id="playlist" class="" name="playlist" required>
+                    <option value="EDM">EDM</option>
+                    <option value="Hip-Hop">Hip-Hop</option>
+                    <option value="Indie">Indie</option>
+                    <option value="Pop">Pop</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Various">Various</option>
+                </select><br><br>
+            <button type="submit" class="bg-white text-black px-5">Upload</button>
+        </form>
+        </div>
+        <div class="w-full bg-[#9EBC9E] rounded-xl p-5">
+            <h2 class="text-xl font-semibold">Manage Playlists</h2>
+            <br>
+            <ul id="Available_playlists" class="text-black"></ul>
+        </div>
+    </div>
+    <div>
+        <h1>Users in database</h1>
+        <ul></ul>
+    </div>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            
+            fetch('/upload_song', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // Optionally, clear the form fields after successful upload
+                document.getElementById('uploadForm').reset();
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

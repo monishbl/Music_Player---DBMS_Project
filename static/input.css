@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#timeline {
+    margin-top: 15px;
+    width: 90%;
+    height: 5px;
+    background-color: #ddd;
+    position: relative;
+    cursor: pointer;
+    border-radius: 50px;
+    transition-duration: 0.25s;
+}
+
+#progress {
+    border-radius: 50px;
+    height: 100%;
+    width: 0;
+    background-color: #9EBC9E;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#prgslider{
+    position: absolute;
+    left: 0%;
+    width: 10px;
+    height: 10px;
+    transform: translateY(-25%);
+    border-radius: 100%;
+    background: #fff;
+}
+button {
+        /* Add necessary styling */
+        padding: 10px;
+        margin: 5px;
+        background-color: #9EBC9E;
+        color: white;
+        border: none;
+        border-radius: 999999px;
+        cursor: pointer;
+        transition-duration: 0.5s;
+}
+button:hover, button:active{
+  scale: 1.15;
+  transition-duration: 0.3s;
+}
+
+body::-webkit-scrollbar {
+    width: 12px;
+    display: none;
+}
+
+body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #190028;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: #190028;
+}
+  
+  .dropup {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropup-content {
+    display: none;
+    position: absolute;
+    float: right;
+    background-color: #9EBC9E;
+    border: 2px solid white;
+    transform: translateX(calc(-100% + 100px));
+    width: 500px;
+    bottom: 50px;
+    z-index: 1;
+    border-radius: 10px;
+  }
+  
+  .dropup:hover .dropup-content {
+    display: block;
+  }
+  
+  .dropup:hover .dropbtn {
+    background-color: #9EBC9E;
+  }
+  ul li{
+    padding: 10px;
+    cursor: pointer;
+  }
+  ul li:hover{
+    background-color: #9EBC9E;
+    border-radius: 10px;
+  }
